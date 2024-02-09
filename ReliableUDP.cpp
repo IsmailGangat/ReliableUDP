@@ -152,6 +152,7 @@ int main(int argc, char* argv[])
 	boolean client_sending = false;
 	boolean server_receiving = false;
 	boolean client_receiving = false;
+	char filename[50];
 
 	if (argc >= 2)
 	{
@@ -166,6 +167,7 @@ int main(int argc, char* argv[])
 				// This client will send a file
 				client_sending = true;
 				server_receiving = true;
+				getFilename(filename, sizeof(filename));
 			}
 			else
 			{
@@ -181,6 +183,7 @@ int main(int argc, char* argv[])
 			// This server will send a file
 			server_sending = true;
 			client_receiving = true;
+			getFilename(filename, sizeof(filename));
 		}
 	}
 	else
@@ -287,12 +290,12 @@ int main(int argc, char* argv[])
 			if (mode == Server && server_sending == true && client_sending == false)
 			{
 				greeting = "Server is sending packet number: " + to_string(count++);
-				printf("I am server sending the file in server mode.\n");
+				printf("I am server sending the file %s in server mode.\n", filename);
 			}
 			else if (mode == Client && client_sending == true && server_sending == false)
 			{
 				greeting = "Client is sending packet number: " + to_string(count++);
-				printf("I am client sending the file in client mode.\n");
+				printf("I am client sending the file %s in client mode.\n", filename);
 			}
 
 			memcpy(packet, greeting.c_str(), greeting.size() < PacketSize ? greeting.size() : PacketSize - 1);
