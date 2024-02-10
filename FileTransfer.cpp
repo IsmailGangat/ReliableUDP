@@ -32,3 +32,31 @@
 			filename[strlen(filename) - 1] = '\0';
 		}
 	}
+
+
+    char* SendMetadata(const char* file_name) {
+        // Open the file and get its size
+        FILE* file = fopen(file_name, "r");
+        if (file == NULL) {
+            printf("Error opening file: %s\n", strerror(errno));
+            return NULL;
+        }
+
+        fseek(file, 0, SEEK_END);
+        long file_size = ftell(file);
+        fseek(file, 0, SEEK_SET);
+
+        // Prepare the metadata
+        char* metadata = (char*)malloc(128 * sizeof(char));
+
+        if (metadata == NULL)
+        {
+            printf("Failed to allocate memory");
+            return NULL;
+        }
+
+        sprintf(metadata, "%s:%ld", file_name, file_size);
+
+        fclose(file);
+        return metadata;
+    }
