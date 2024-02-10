@@ -1,51 +1,12 @@
 ﻿  FileTransfer.cpp
-<<<<<<< HEAD
 C:\Users\igang\Desktop\ReliableUDP\Net.h(190,21): warning C4244: '=': conversion from 'SOCKET' to 'int', possible loss of data
 C:\Users\igang\Desktop\ReliableUDP\Net.h(910,29): warning C4244: '/=': conversion from 'float' to 'int', possible loss of data
 C:\Users\igang\Desktop\ReliableUDP\Net.h(911,30): warning C4244: '/=': conversion from 'float' to 'int', possible loss of data
-C:\Users\igang\Desktop\ReliableUDP\FileTransfer.cpp(28,3): error C2561: 'FileHandler::LoadFromFile': function must return a value
-C:\Users\igang\Desktop\ReliableUDP\FileTransfer.cpp(23,7): message : see declaration of 'FileHandler::LoadFromFile'
-C:\Users\igang\Desktop\ReliableUDP\FileTransfer.cpp(35,3): error C2561: 'FileHandler::SendAndRecieveFromFile': function must return a value
-C:\Users\igang\Desktop\ReliableUDP\FileTransfer.cpp(31,7): message : see declaration of 'FileHandler::SendAndRecieveFromFile'
-C:\Users\igang\Desktop\ReliableUDP\FileTransfer.cpp(42,3): error C2561: 'FileHandler::VerifyFileContent': function must return a value
-C:\Users\igang\Desktop\ReliableUDP\FileTransfer.cpp(38,7): message : see declaration of 'FileHandler::VerifyFileContent'
-C:\Users\igang\Desktop\ReliableUDP\FileTransfer.cpp(49,3): error C2561: 'FileHandler::ValidateFile': function must return a value
-C:\Users\igang\Desktop\ReliableUDP\FileTransfer.cpp(45,7): message : see declaration of 'FileHandler::ValidateFile'
   ReliableUDP.cpp
-C:\Users\igang\Desktop\ReliableUDP\Net.h(190,21): warning C4244: '=': conversion from 'SOCKET' to 'int', possible loss of data
-C:\Users\igang\Desktop\ReliableUDP\Net.h(910,29): warning C4244: '/=': conversion from 'float' to 'int', possible loss of data
-C:\Users\igang\Desktop\ReliableUDP\Net.h(911,30): warning C4244: '/=': conversion from 'float' to 'int', possible loss of data
-C:\Users\igang\Desktop\ReliableUDP\ReliableUDP.cpp(170,5): error C3861: 'getFilename': identifier not found
-C:\Users\igang\Desktop\ReliableUDP\ReliableUDP.cpp(186,4): error C3861: 'getFilename': identifier not found
-C:\Users\igang\Desktop\ReliableUDP\ReliableUDP.cpp(290,44): warning C4805: '==': unsafe mix of type 'boolean' and type 'bool' in operation
-C:\Users\igang\Desktop\ReliableUDP\ReliableUDP.cpp(295,49): warning C4805: '==': unsafe mix of type 'boolean' and type 'bool' in operation
-C:\Users\igang\Desktop\ReliableUDP\ReliableUDP.cpp(355,46): warning C4805: '==': unsafe mix of type 'boolean' and type 'bool' in operation
-C:\Users\igang\Desktop\ReliableUDP\ReliableUDP.cpp(362,51): warning C4805: '==': unsafe mix of type 'boolean' and type 'bool' in operation
-=======
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\Net.h(190,21): warning C4244: '=': conversion from 'SOCKET' to 'int', possible loss of data
-  (compiling source file 'FileTransfer.cpp')
-  
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\Net.h(910,29): warning C4244: '/=': conversion from 'float' to 'int', possible loss of data
-  (compiling source file 'FileTransfer.cpp')
-  
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\Net.h(911,30): warning C4244: '/=': conversion from 'float' to 'int', possible loss of data
-  (compiling source file 'FileTransfer.cpp')
-  
-  ReliableUDP.cpp
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\Net.h(190,21): warning C4244: '=': conversion from 'SOCKET' to 'int', possible loss of data
-  (compiling source file 'ReliableUDP.cpp')
-  
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\Net.h(910,29): warning C4244: '/=': conversion from 'float' to 'int', possible loss of data
-  (compiling source file 'ReliableUDP.cpp')
-  
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\Net.h(911,30): warning C4244: '/=': conversion from 'float' to 'int', possible loss of data
-  (compiling source file 'ReliableUDP.cpp')
-  
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\ReliableUDP.cpp(290,44): warning C4805: '==': unsafe mix of type 'boolean' and type 'bool' in operation
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\ReliableUDP.cpp(295,49): warning C4805: '==': unsafe mix of type 'boolean' and type 'bool' in operation
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\ReliableUDP.cpp(355,46): warning C4805: '==': unsafe mix of type 'boolean' and type 'bool' in operation
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\ReliableUDP.cpp(362,51): warning C4805: '==': unsafe mix of type 'boolean' and type 'bool' in operation
->>>>>>> 95a8546af821b1a7e2239b7081f0dc67425ea1c7
+C:\Users\igang\Desktop\ReliableUDP\ReliableUDP.cpp(190,21): warning C4244: '=': conversion from 'SOCKET' to 'int', possible loss of data
+C:\Users\igang\Desktop\ReliableUDP\ReliableUDP.cpp(910,29): warning C4244: '/=': conversion from 'float' to 'int', possible loss of data
+C:\Users\igang\Desktop\ReliableUDP\ReliableUDP.cpp(911,30): warning C4244: '/=': conversion from 'float' to 'int', possible loss of data
   Generating Code...
 ReliableUDP.obj : error LNK2005: "void __cdecl net::wait(float)" (?wait@net@@YAXM@Z) already defined in FileTransfer.obj
-H:\OneDrive - Conestoga College\SET Program\Level 4\NetworkApplicationDevelopment\Assignments\A01\ReliableUDP\x64\Debug\ReliableUDP.exe : fatal error LNK1169: one or more multiply defined symbols found
+MSVCRTD.lib(exe_main.obj) : error LNK2019: unresolved external symbol main referenced in function "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ)
+C:\Users\igang\Desktop\ReliableUDP\x64\Debug\ReliableUDP.exe : fatal error LNK1120: 1 unresolved externals
