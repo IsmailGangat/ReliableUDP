@@ -2,7 +2,14 @@
 	Reliability and Flow Control Example
 	From "Networking for Game Programmers" - http://www.gaffer.org/networking-for-game-programmers
 	Author: Glenn Fiedler <gaffer@gaffer.org>
-	Latest Commit
+*/
+
+/* Filename: ReliableUDP.cpp
+*  Project: ReliableUDP
+*  Programmer: Ismail Gangat, Hasan Dukanwala
+*  First Version: Feb 4th 2024
+*  Description: This file contains the main port and IP connection information as well as
+*				UDP header content
 */
 
 #include <iostream>
@@ -13,7 +20,7 @@
 #include "Net.h"
 #include "ReliablePrototypes.h"
 
-#pragma warning(disable:4996)
+//#pragma warning(disable:4996)
 //#define SHOW_ACKS
 
 using namespace std;
@@ -27,6 +34,12 @@ const float SendRate = 1.0f / 30.0f;
 const float TimeOut = 10.0f;
 const int PacketSize = 256;
 
+/*
+	NAME	:	FlowControl
+	PURPOSE :	The purpose of this class is to calculate the time spent
+				when sending and printing it.
+
+*/
 class FlowControl
 {
 public:
@@ -135,26 +148,16 @@ int main(int argc, char* argv[])
 
 	// retrieving Additional command line argument of filename to determine 
 	// who is sending file and who is receiving
-	// if server has filename that means server wants to send, and if client have file name
-	//  then client wants to send, and if both have then error
-
-	/*if (argc >= 2)
-	{
-		int a, b, c, d;
-		#pragma warning(suppress:4996)
-		if (sscanf(argv[1], "%d.%d.%d.%d", &a, &b, &c, &d))
-		{
-			mode = Client;
-			address = Address(a, b, c, d, ServerPort);
-		}
-	}*/
 
 	boolean server_sending = false;
 	boolean client_sending = false;
 	boolean server_receiving = false;
 	boolean client_receiving = false;
+	int metaDataFlag = 0; // ) flag means metadata is not sent
 	char filename[50] = { 0 };
+	int numChunks;
 
+	// Command line args parse 
 	if (argc >= 2)
 	{
 		int a, b, c, d;
@@ -165,10 +168,10 @@ int main(int argc, char* argv[])
 			address = Address(a, b, c, d, ServerPort);
 			if (argc >= 3 && strcmp(argv[2], "-send") == 0)
 			{
-				// This client will send a file
+
 				client_sending = true;
 				server_receiving = true;
-				getFilename(filename, sizeof(filename));
+
 			}
 			else
 			{
@@ -181,10 +184,10 @@ int main(int argc, char* argv[])
 		else if (strcmp(argv[1], "-send") == 0)
 		{
 			mode = Server;
-			// This server will send a file
+
 			server_sending = true;
 			client_receiving = true;
-			getFilename(filename, sizeof(filename));
+
 		}
 	}
 	else
@@ -192,17 +195,10 @@ int main(int argc, char* argv[])
 		mode = Server;
 		client_sending = true;
 		server_receiving = true;
-		// This server will wait to receive a file
+
 	}
 
 	// initialize
-
-// After setting mode and flags
-//std::cout << "Mode: " << (mode == Server ? "Server" : "Client") << std::endl;
-//std::cout << "Server Sending: " << (server_sending ? "true" : "false") << std::endl;
-//std::cout << "Client Sending: " << (client_sending ? "true" : "false") << std::endl;
-//std::cout << "Server Receiving: " << (server_receiving ? "true" : "false") << std::endl;
-//std::cout << "Client Receiving: " << (client_receiving ? "true" : "false") << std::endl;
 
 	if (!InitializeSockets())
 	{
@@ -232,10 +228,8 @@ int main(int argc, char* argv[])
 	FlowControl flowControl;
 
 
-
 	while (true)
 	{
-
 		// update flow control
 
 		if (connection.IsConnected())
@@ -264,118 +258,59 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-
-
-
-		// Determine if server is sending then file will be devided into chunks
-		// ,file metadata will be added and packet will be sent.
-		// then there will be a code for client that will receive packets, put back into order and
-		// will write data to the file and store it.
-		// 
-
-
-		// After setting mode and flags
-		/*std::cout << "Mode: " << (mode == Server ? "Server" : "Client") << std::endl;
-		std::cout << "Server Sending: " << (server_sending ? "true" : "false") << std::endl;
-		std::cout << "Client Sending: " << (client_sending ? "true" : "false") << std::endl;
-		std::cout << "Server Receiving: " << (server_receiving ? "true" : "false") << std::endl;
-		std::cout << "Client Receiving: " << (client_receiving ? "true" : "false") << std::endl;*/
-
 		sendAccumulator += DeltaTime;
 		static int count = 1;
-		// Here filename will be given to a function that will
-		// break it into chunks of data before sending
-
 
 
 		while (sendAccumulator > 1.0f / sendRate)
 		{
-			if (mode == Client && client_sending == true && server_receiving == true)
-			{
-				if (filename[0] == '\0')
-				{
-					getFilename(filename, sizeof(filename));
-				}
 
-
-			}
-			else if (mode == Server && server_sending == true && client_receiving == true)
-			{
-				if (filename[0] == '\0')
-				{
-					getFilename(filename, sizeof(filename));
-				}
-
-			}
 			unsigned char packet[PacketSize];
 			memset(packet, 0, sizeof(packet));
 
 
-			//string greeting;
-			if (mode == Server && server_sending == true && client_sending == false)
+			// If client connection
+			if (mode == Client && client_sending == true && server_sending == false)
 			{
-				char* fileMetaData = SendMetadata(filename); // send file to extract metadata and receive metadata from function
 
-				if (fileMetaData != NULL) {
+				if (filename[0] == '\0')
+				{
+					getFilename(filename, sizeof(filename));
+				}
+
+				// send file to extract metadata and receive metadata from function
+				char* fileMetaData = SendMetadata(filename);
+
+				if (fileMetaData != NULL && metaDataFlag == 0) {
 					memcpy(packet, fileMetaData, strlen(fileMetaData));
-					printf("Debug: Metadata is %s\n", fileMetaData); // Debug statement
+					printf("Debug: Metadata is %s\n", fileMetaData);
 					if (!connection.SendPacket(packet, sizeof(packet))) {
 						perror("Failed to send metadata");
 					}
 					free(fileMetaData);
+
 				}
 				else
 				{
 					printf("failed to get filemetadata.\n");
 				}
-				//greeting = "Server is sending packet number: " + to_string(count++);
-				printf("I am server sending the file %s in server mode.\n", filename);
-			}
-			else if (mode == Client && client_sending == true && server_sending == false)
-			{
-				char* fileMetaData = SendMetadata(filename); // send file to extract metadata and receive metadata from function
 
-				if (fileMetaData != NULL) {
-					memcpy(packet, fileMetaData, strlen(fileMetaData));
-					printf("Debug: Metadata is %s\n", fileMetaData); // Debug statement
-					if (!connection.SendPacket(packet, sizeof(packet))) {
-						perror("Failed to send metadata");
-					}
-					free(fileMetaData);
-				}
-				else
-				{
-					printf("failed to get filemetadata.\n");
-				}
-				//greeting = "Client is sending packet number: " + to_string(count++);
 				printf("I am client sending the file %s in client mode.\n", filename);
+
+				// Break data into chunks
+				Chunk* chunks = breakFileIntoChunks(filename, &numChunks, PacketSize);
+
+				for (int i = 0; i < numChunks; i++) {
+					if (!connection.SendPacket(chunks[i].data, chunks[i].size)) {
+						printf("Failed to send packet\n");
+						return -1;
+					}
+				}
 			}
 
-			//memcpy(packet, greeting.c_str(), greeting.size() < PacketSize ? greeting.size() : PacketSize - 1);
-			//connection.SendPacket(packet, sizeof(packet));
 			sendAccumulator -= 1.0f / sendRate;
 
-			//// For Sending tasks:
-			//		//// 
-			//		//// 1. Receiving the file metadata
-			//		////    - Extract the file metadata from the received packet.
-			//		////    - Implement logic to identify and handle metadata packets.
-			//		////    - Store or process the received metadata.
 
-			//		//// 2. Receiving the file pieces
-			//		////    - Extract file pieces from the received packet.
-			//		////    - Identify packets containing file pieces based on their structure or flags.
-			//		////    - Assemble the file pieces into a complete file back on the server side.
-
-			//		//// 3. Writing the pieces out to the disk
-			//		////    - Write the received file pieces to a file on the server's disk.
-			//		////    - Keep track of the received file pieces and ensure proper order.
-			//		////    - Implement error handling
-
-			//		//// 4. Verifying the file integrity
-			//		////    - Use checksums or other methods to verify the correctness of the file.
-			//		////    - Handle cases where the file integrity check fails.
-			//	
 		}
 
 		while (true)
@@ -385,58 +320,56 @@ int main(int argc, char* argv[])
 			if (bytes_read == 0)
 				break;
 
-			// For Receiving tasks:
-
-			// 1. Retrieving the file from disk
-			// - Read the file from disk into memory for further processing.
-			// - Handle file not found or access errors appropriately.
-
-			// 2. Sending file metadata
-			// - Prepare metadata for the file (e.g., file name, size, type).
-			// - Create a packet containing the file metadata and send it to the server.
-
-			// 3. Breaking the file in pieces to send
-			// - Divide the file into smaller pieces to fit into network packets.
-			// - Add necessary information to each piece (e.g., sequence number).
-			// - Create packets with file pieces and send them to the server.
-
-			// 4. Sending the pieces
-			// - Send the packets containing file pieces to the server.
-			// - Implement reliable and ordered delivery to ensure correct reconstruction.
-			// - Handle acknowledgment and retransmission for reliable delivery.
 
 			// Parse and print the metadata
 			char file_name[128];
 			long file_size;
+
 			int ret;
 			ret = sscanf((char*)packet, "%[^:]:%ld", file_name, &file_size);
+
+			if (file_name[strlen(file_name) - 1] == '\n') {
+				file_name[strlen(file_name) - 1] = '\0';
+			}
 			if (ret != 2) {
 				// Handle the error
 				printf("Failed to parse packet. Expected 2 items, but sscanf returned %d.\n", ret);
 			}
 
+			// Ensure buffer is large enough
+			char filePath[1024];
+			strcpy(filePath, "./output/");
+			strcat(filePath, file_name);
 
+			// Server Connection
 			if (mode == Server && server_receiving == true && client_receiving == false)
 			{
-				//printf("%.*s\n", bytes_read, packet);
+				// prompt whos connected
 				printf("I am server receiving the file in server mode.\n");
 				printf("Received metadata:\n");
 				printf("File name: %s\n", file_name);
 				printf("File size: %ld\n", file_size);
 
-			}
-			else if (mode == Client && client_receiving == true && server_receiving == false)
-			{
-				//printf("%.*s\n", bytes_read, packet);
-				printf("I am client receiving the file in client mode.\n");
-				printf("Received metadata:\n");
-				printf("File name: %s\n", file_name);
-				printf("File size: %ld\n", file_size);
+				// Recieve file
+				FILE* file = fopen(filePath, "wb");
+				if (file == NULL) {
+					printf("Failed to open file\n");
+					return -1;
+				}
+
+				unsigned char buffer[PacketSize];
+				int size;
+
+				while ((size = connection.ReceivePacket(buffer, PacketSize)) > 0) {
+					fwrite(buffer, 1, size, file);
+				}
+
+				fclose(file);
 
 			}
-
 
 		}
+
 
 		// show packets that were acked this frame
 
